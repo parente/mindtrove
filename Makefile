@@ -1,6 +1,13 @@
 .PHONY: nginx nginx-image nginx-reload
 
 NGINX_IMAGE:=parente/nginx
+HTML_DIR:=/srv/html
+
+setup: nginx-image
+	@mkdir -p $(HTML_DIR)
+	@chown -R root:www-data $(HTML_DIR)
+	@chmod -R go-w $(HTML_DIR)
+	@chmod g+s $(HTML_DIR)/*
 
 nginx-image:
 	@cd src/nginx; docker build -t $(NGINX_IMAGE) .
@@ -12,6 +19,6 @@ nginx:
 	@docker run -d --name nginx \
 	-p 80:80 \
 	--restart on-failure \
-	-v /srv/html:/usr/local/nginx/html:ro \
+	-v $(HTML_DIR):/usr/local/nginx/html:ro \
 	-v ./src/nginx:/srv/nginx:ro \
 	$(NGINX_IMAGE)
