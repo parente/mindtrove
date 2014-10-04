@@ -23,5 +23,5 @@ nginx:
 	-p 80:80 \
 	--restart on-failure \
 	-v $(HTML_DIR):/usr/local/nginx/html:ro \
-	-v ./src/nginx:/srv/nginx:ro \
+	-v `pwd`/src/nginx:/srv/nginx:ro \
 	$(NGINX_IMAGE)
