@@ -1,7 +1,10 @@
-.PHONY: nginx nginx-image nginx-reload
+.PHONY: help setup nginx nginx-image nginx-reload
 
 NGINX_IMAGE:=parente/nginx
 HTML_DIR:=/srv/html
+
+help:
+	@cat Makefile
 
 setup: nginx-image
 	@mkdir -p $(HTML_DIR)
