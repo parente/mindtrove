@@ -1,0 +1,9 @@
+# https://github.com/docker/docker/issues/7333
+# https://www.digitalocean.com/community/tutorials/how-to-manage-log-files-with-logrotate-on-ubuntu-12-10
+/var/lib/docker/containers/*/*.log {
+    rotate 7
+    size=100M
+    compress
+    delaycompress
+    copytruncate
+}

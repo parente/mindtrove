@@ -7,10 +7,13 @@ help:
 	@cat Makefile
 
 setup: nginx-image
+# setup static html dirs with proper permissions
 	@mkdir -p $(HTML_DIR)
 	@chown -R root:www-data $(HTML_DIR)
 	@chmod -R go-w $(HTML_DIR)
 	@chmod g+s $(HTML_DIR)/*
+# enable log rotation for docker
+	@cp ./src/logrotate/docker /etc/logrotate.d/docker
 
 nginx-image:
 	@cd src/nginx; docker build -t $(NGINX_IMAGE) .
