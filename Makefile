@@ -1,7 +1,12 @@
-.PHONY: help setup nginx nginx-image nginx-reload
+.PHONY: help setup nginx nginx-image nginx-reload omnifocus
 
 NGINX_IMAGE:=parente/nginx
 HTML_DIR:=/srv/html
+
+WEBDAV_IMAGE:=parente/webdav
+OMNIFOCUS_DIR:=/srv/webdav
+
+SHELL:=/bin/bash
 
 help:
 	@cat Makefile
@@ -28,3 +33,12 @@ nginx:
 	-v $(HTML_DIR):/usr/local/nginx/html:ro \
 	-v `pwd`/src/nginx:/srv/nginx:ro \
 	$(NGINX_IMAGE)
+
+omnifocus:
+	@docker run -d --name omnifocus \
+    -p 8443:443 \
+    --restart on-failure \
+    -v $(OMNIFOCUS_DIR):/srv/webdav \
+    -e PASSWORD=`read -p "Password: " -s PASSWORD && echo $$PASSWORD` \
+    $(WEBDAV_IMAGE) 
+
