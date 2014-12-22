@@ -27,9 +27,18 @@ nginx-reload:
 	@ps aux | grep 'nginx: master' | grep -v grep | awk '{print $$2}' | xargs kill -HUP
 
 nginx:
+	@-docker rm -f nginx	
 	@docker run -d --name nginx \
 	-p 80:80 \
 	--restart on-failure \
+	-v $(HTML_DIR):/usr/local/nginx/html:ro \
+	-v `pwd`/src/nginx:/srv/nginx:ro \
+	$(NGINX_IMAGE)
+
+nginx-dev:
+	@-docker rm -f nginx-dev
+	@docker run -d --name nginx-dev \
+    -p 8080:80 \
 	-v $(HTML_DIR):/usr/local/nginx/html:ro \
 	-v `pwd`/src/nginx:/srv/nginx:ro \
 	$(NGINX_IMAGE)

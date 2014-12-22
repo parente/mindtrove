@@ -1,2 +1,2 @@
-FROM nginx:1.7.1
-RUN rm /etc/nginx.conf; ln -s /srv/nginx/nginx.conf /etc/nginx.conf
+FROM nginx:1.7.8
+RUN rm -r /etc/nginx/nginx.conf && ln -s /srv/nginx/nginx.conf /etc/nginx/nginx.conf
