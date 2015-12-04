@@ -1,4 +1,4 @@
-.PHONY: help setup nginx nginx-image nginx-reload omnifocus
+.PHONY: help setup nginx nginx-image nginx-reload omnifocus mindtrove-cert
 
 NGINX_IMAGE:=parente/nginx
 HTML_DIR:=/srv/html
@@ -30,24 +30,36 @@ nginx:
 	@-docker rm -f nginx	
 	@docker run -d --name nginx \
 	-p 80:80 \
+	-p 443:443 \
 	--restart on-failure \
 	-v $(HTML_DIR):/usr/local/nginx/html:ro \
 	-v `pwd`/src/nginx:/srv/nginx:ro \
+	-v /etc/letsencrypt:/etc/letsencrypt:ro \
 	$(NGINX_IMAGE)
 
 nginx-dev:
 	@-docker rm -f nginx-dev
 	@docker run -d --name nginx-dev \
-    -p 8080:80 \
+	-p 8080:80 \
+	-p 8443:443 \
 	-v $(HTML_DIR):/usr/local/nginx/html:ro \
 	-v `pwd`/src/nginx:/srv/nginx:ro \
+	-v /etc/letsencrypt:/etc/letsencrypt:ro \
 	$(NGINX_IMAGE)
 
 omnifocus:
 	@docker run -d --name omnifocus \
-    -p 8443:443 \
-    --restart on-failure \
-    -v $(OMNIFOCUS_DIR):/srv/webdav \
-    -e PASSWORD=`read -p "Password: " -s PASSWORD && echo $$PASSWORD` \
-    $(WEBDAV_IMAGE) 
+	-p 8443:443 \
+	--restart on-failure \
+	-v $(OMNIFOCUS_DIR):/srv/webdav \
+	-e PASSWORD=`read -p "Password: " -s PASSWORD && echo $$PASSWORD` \
+	$(WEBDAV_IMAGE) 
+
+mindtrove-cert:
+	@cd /opt/letsencrypt; \
+	./letsencrypt-auto certonly --webroot \
+	--duplicate \
+	--email parente@cs.unc.edu \
+	--webroot-path /srv/html/blog \
+	-d mindtrove.info -d www.mindtrove.info
 
